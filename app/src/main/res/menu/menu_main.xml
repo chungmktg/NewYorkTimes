@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/action_search"
+          android:title="search"
+          android:icon="@drawable/ic_search"
+          app:showAsAction="ifRoom|collapseActionView"
+          app:actionViewClass="android.support.v7.widget.SearchView" />
+    <item
+            android:id="@+id/filter_menu"
+            android:icon="@drawable/ic_sort"
+            app:showAsAction="always"
+            android:title="Compose">
+    </item>
+    <item
+            android:id="@+id/more_option_menu"
+            android:icon="@drawable/ic_more_event"
+            app:showAsAction="ifRoom|withText"
+            android:title="more">
+        <menu>
+            <item
+                    android:id="@+id/setting"
+                    android:title="Setting">
+            </item>
+            <item android:id="@+id/about"
+                  android:title="About"
+            />
+            <item android:id="@+id/help"
+                  android:title="Help" />
+            <item android:id="@+id/action_share"
+                  android:title="share"
+                  app:actionProviderClass="android.support.v7.widget.ShareActionProvider"/>
+        </menu>
+    </item>
+
+</menu>
