@@ -8,6 +8,7 @@
         android:layout_height="wrap_content">
 
     <LinearLayout
+            android:id="@+id/linearLayout_item"
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
