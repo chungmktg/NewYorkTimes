@@ -6,6 +6,8 @@ import com.example.iron.weektwonewyorktimes.Models.IModelsGetDataAPI
 import com.example.iron.weektwonewyorktimes.Views.IView
 
 class FiterPresenter : IModelsGetDataAPI {
+
+
     private var iView: IView? = null
     private var getdataAPI: GetdataAPI?=GetdataAPI(this)
 
@@ -19,6 +21,8 @@ class FiterPresenter : IModelsGetDataAPI {
 
     }
 
+    override fun getSuccesLoadMore(doclist: List<Doc>?) {
+    }
     override fun getSucces(doclist: List<Doc>?) {
         iView?.getDataSuccess(doclist)
     }

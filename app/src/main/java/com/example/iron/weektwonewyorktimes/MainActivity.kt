@@ -19,21 +19,26 @@ import com.example.iron.weektwonewyorktimes.Views.IView
 import kotlinx.android.synthetic.main.activity_main.*
 import android.support.v7.widget.RecyclerView
 import android.widget.Toast
-import com.example.iron.weektwonewyorktimes.Models.EndlessRecyclerViewScrollListener
-import android.net.NetworkInfo
-import android.content.Context.CONNECTIVITY_SERVICE
-import android.support.v4.content.ContextCompat.getSystemService
 import android.net.ConnectivityManager
-import android.support.v4.content.ContextCompat
 import java.io.IOException
+import android.widget.AbsListView
 
 
+@Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity(), IView {
+
+
     lateinit var mainPresenter: MainPresenter
     private lateinit var adapters: ArticleAdapter
     lateinit var filterPresenter: FiterPresenter
+    var pagecurrent : Int = 0
+    var isScrolling : Boolean = false
+    var pastVisibleItems = 0
+    var currentItems: Int = 0
+    var totalItems:Int = 0
+    var arrayArticalLoadMore : ArrayList<Doc> = ArrayList()
 
-    private var scrollListener: EndlessRecyclerViewScrollListener? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,45 +48,98 @@ class MainActivity : AppCompatActivity(), IView {
         filterPresenter =  FiterPresenter(this)
         mainPresenter= MainPresenter(this)
         mainPresenter.loadData()
-
-
     }
 
     private fun checkInternet() {
-        if (!isNetworkAvailable()) {
-            Toast.makeText(getApplicationContext(), "Opps looks like " +
-                    "network connectivity problem. Turn on Internet and click Refresh in menu option",
-                Toast.LENGTH_LONG).show();
-        }
-
         if (!isOnline()) {
-            Toast.makeText(getApplicationContext(), "Your device is not online, " +
-                    "check wifi and try again!",
-                Toast.LENGTH_LONG).show();
+            Toast.makeText(
+                applicationContext, "Your phone is not online, " +
+                    "check wifi and click refresh in menu !",
+                Toast.LENGTH_LONG).show()
         }
     }
-
     override fun getDataSuccess(listDemo: List<Doc>?) {
+        arrayArticalLoadMore = ArrayList(listDemo)
         adapters = ArticleAdapter(this@MainActivity, listDemo)
         val manager = StaggeredGridLayoutManager(3, LinearLayoutManager.VERTICAL)
+        manager.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
         recycleview_main.layoutManager = manager
         recycleview_main.setHasFixedSize(true)
+        recycleview_main.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+                    isScrolling = true
+                }
+            }
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                currentItems = manager.childCount
+                totalItems = manager.itemCount
+                var firstVisibleItems: IntArray? = null
+                firstVisibleItems = manager.findFirstVisibleItemPositions(firstVisibleItems)
+                if(firstVisibleItems != null && firstVisibleItems.isNotEmpty()) {
+                    pastVisibleItems = firstVisibleItems[0];
+                }
+                if (isScrolling){
+                    if ((currentItems + pastVisibleItems) >= totalItems){
+                        isScrolling = false
+                        Toast.makeText(this@MainActivity, "Loading more...", Toast.LENGTH_SHORT).show()
+                        loadNextDataFromApi(pagecurrent)
+                    }
+                }
+
+            }
+        })
         recycleview_main.adapter = adapters
         adapters.notifyDataSetChanged()
-        manager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE)
-        recycleview_main.addOnScrollListener(
-            object : EndlessRecyclerViewScrollListener(manager) {
-                override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView) {
-                    loadNextDataFromApi(page)
+    }
+    override fun getDataSuccessLoadMore(listDemo: List<Doc>?) {
+        if (listDemo != null) {
+            for(i in listDemo)
+                arrayArticalLoadMore.add(i)
+        }
+        adapters = ArticleAdapter(this@MainActivity, arrayArticalLoadMore)
+        val manager = StaggeredGridLayoutManager(3, LinearLayoutManager.VERTICAL)
+        manager.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
+        recycleview_main.layoutManager = manager
+        recycleview_main.setHasFixedSize(true)
+        recycleview_main.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+                    isScrolling = true
                 }
-            })
+            }
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                currentItems = manager.childCount
+                totalItems = manager.itemCount
+                var firstVisibleItems: IntArray? = null
+                firstVisibleItems = manager.findFirstVisibleItemPositions(firstVisibleItems)
+                if(firstVisibleItems != null && firstVisibleItems.isNotEmpty()) {
+                    pastVisibleItems = firstVisibleItems[0];
+                }
+                if (isScrolling){
+                    if ((currentItems + pastVisibleItems) >= totalItems){
+                        isScrolling = false
+                        Toast.makeText(this@MainActivity, "Loading more...", Toast.LENGTH_SHORT).show()
+                        loadNextDataFromApi(pagecurrent)
+                    }
+                }
+
+            }
+        })
+        recycleview_main.adapter = adapters
+        adapters.notifyDataSetChanged()
+    }
+    private fun loadNextDataFromApi(page:Int) {
+        pagecurrent = page + 1
+        mainPresenter.getDataLoadMorePage(pagecurrent)
 
     }
-
-    private fun loadNextDataFromApi(page: Int) {
-        Toast.makeText(this, "Loading more..."+ page, Toast.LENGTH_SHORT).show()
-    }
-
     override fun getDataFailed(message: String) {
         Log.d("testfail",message)
     }
@@ -117,13 +175,6 @@ class MainActivity : AppCompatActivity(), IView {
         }
         return super.onOptionsItemSelected(item)
     }
-
-    private fun isNetworkAvailable(): Boolean {
-        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val activeNetworkInfo = connectivityManager.activeNetworkInfo
-        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting
-    }
-
     private fun isOnline(): Boolean {
         val runtime = Runtime.getRuntime()
         try {

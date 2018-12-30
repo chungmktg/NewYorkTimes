@@ -12,7 +12,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class GetdataAPI(var iModelsGetDataAPI: IModelsGetDataAPI) {
 
-    val filter = HashMap<String, String?>()
+    private val filter = HashMap<String, String?>()
+    lateinit var currentFilter : HashMap<String, String?>
 
     fun getDataAPIbyFilter(value: ArrayList<String>) {
         val beginDay = value[0]
@@ -22,36 +23,33 @@ class GetdataAPI(var iModelsGetDataAPI: IModelsGetDataAPI) {
         for (i in 0 until checkbox.size) {
             checbockStyle = checbockStyle.plus(checkbox[i] + ",")
         }
-
-        Log.d("checkk",checbockStyle)
-        filter.clear()
-        filter["begin_date"] = beginDay
-        filter["sort"] = sortby[0]
-        filter["fq"] = checbockStyle
-        filter["api-key"] = API_KEY
-        getRetrofit(filter)
+        getFilter(sortby[0], beginDay, checbockStyle, PAGE)
+        getRetrofit(filter, false)
     }
-
     fun getdataAPI() {
-        filter.clear()
-        filter["sort"] = SORT
-        filter["begin_date"] = BEGIN_DAY
-        filter["fq"] = FQ
-        filter["api-key"] = API_KEY
-        getRetrofit(filter)
+        getFilter(SORT, BEGIN_DAY, FQ, PAGE)
+        getRetrofit(filter, false)
     }
-
     fun getRetrofitFromSeach(inputText : String?){
-        filter.clear()
-        filter["sort"] = SORT
-        filter["begin_date"] = BEGIN_DAY
-        filter["fq"] = inputText
+        getFilter(SORT, BEGIN_DAY,inputText, PAGE)
+        getRetrofit(filter, false)
+    }
+    fun getDataLoadMorePage(page:Int){
+        currentFilter = HashMap(filter)
+        currentFilter["page"] = page.toString()
+        Log.d("current",currentFilter.toString())
+        Log.d("current",filter.toString())
+        getRetrofit(currentFilter, true)
+    }
+    fun getFilter(sort: String? = SORT, begin_date : String? = BEGIN_DAY, fq : String ?= FQ, page : String? = PAGE){
+        filter["sort"] = sort
+        filter["begin_date"] = begin_date
+        filter["fq"] = fq
         filter["api-key"] = API_KEY
-        Log.d("getRetrofitFromSeach1",filter.toString())
-        getRetrofit(filter)
+        filter["page"] = page
     }
 
-    private fun getRetrofit(filter: HashMap<String, String?>) {
+    private fun getRetrofit(filter: HashMap<String, String?>, isLoadMore : Boolean) {
 
         val retrofit = Retrofit.Builder().addConverterFactory(
             GsonConverterFactory.create(
@@ -67,8 +65,13 @@ class GetdataAPI(var iModelsGetDataAPI: IModelsGetDataAPI) {
                     if(response.body() == null){
                         Log.d("callfaile","callfelt")
                     }else{
-                        Log.d("callfaile","callsuccess")
-                        iModelsGetDataAPI.getSucces(response.body()?.response?.docs)
+                        Log.d("callsuccess","callsuccess")
+                        if(!isLoadMore){
+                            iModelsGetDataAPI.getSucces(response.body()?.response?.docs)
+                        }else{
+                            iModelsGetDataAPI.getSuccesLoadMore(response.body()?.response?.docs)
+                        }
+
                     }
 
                 }

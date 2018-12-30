@@ -4,5 +4,6 @@ import com.example.iron.weektwonewyorktimes.Models.Doc
 
 interface IView {
     fun getDataSuccess(listDemo: List<Doc>?)
+    fun getDataSuccessLoadMore(listDemo: List<Doc>?)
     fun getDataFailed(message: String)
 }

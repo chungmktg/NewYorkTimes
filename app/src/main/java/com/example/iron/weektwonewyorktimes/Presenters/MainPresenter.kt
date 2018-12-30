@@ -13,6 +13,8 @@ import android.support.v4.content.ContextCompat.*
 
 
 class MainPresenter: IModelsGetDataAPI {
+
+
     private var iView: IView?=null
     private var getdataAPI: GetdataAPI = GetdataAPI(this)
 
@@ -27,14 +29,16 @@ class MainPresenter: IModelsGetDataAPI {
     fun getFilterSeach(string: String?){
         getdataAPI.getRetrofitFromSeach(string)
     }
-    fun checkInternet(){
-
-    }
+   fun getDataLoadMorePage(page:Int){
+       getdataAPI.getDataLoadMorePage(page)
+   }
     override fun getSucces(doclist: List<Doc>?) {
         Log.d("mainpresentergetsuccess",doclist.toString())
         iView?.getDataSuccess(doclist)
     }
-
+    override fun getSuccesLoadMore(doclist: List<Doc>?) {
+        iView?.getDataSuccessLoadMore(doclist)
+    }
     override fun getFailed(message: String) {
         iView?.getDataFailed(message)
     }

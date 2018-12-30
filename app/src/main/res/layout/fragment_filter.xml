@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
              android:id="@+id/fragment_container"
              android:layout_width="match_parent"
-             android:layout_height="match_parent"
->
+             android:layout_height="match_parent">
 
-    <!-- TODO: Update blank fragment layout -->
 
     <TableLayout
             android:layout_margin="20dp"
@@ -20,6 +17,7 @@
                 android:layout_height="match_parent">
             <TextView android:layout_width="wrap_content"
                       android:text="Bein Date "
+                      android:textColor="@color/colorText"
                       android:layout_weight="1"
                       android:textSize="20sp"
                       android:layout_gravity="bottom"
@@ -40,12 +38,14 @@
                     android:layout_weight="1"
                     android:layout_width="wrap_content"
                     android:text="Sort order "
+                    android:textColor="@color/colorText"
                     android:textSize="20sp"
                     android:layout_gravity="bottom"
                     android:layout_height="wrap_content"/>
 
             <Spinner
                     android:id="@+id/spinner_filter"
+                    android:textColor="@color/colorText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
         </TableRow>
@@ -57,6 +57,7 @@
             <TextView
                     android:layout_weight="1"
                     android:text="New Desk Value "
+                    android:textColor="@color/colorText"
                     android:textSize="18sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
@@ -68,17 +69,20 @@
 
                 <CheckBox android:id="@+id/checkbox_Arts"
                           android:padding="10dp"
+                          android:textColor="@color/colorText"
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
                           android:text="Arts"/>
                 <CheckBox android:id="@+id/checkbox_Fashion"
                           android:padding="10dp"
+                          android:textColor="@color/colorText"
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
                           android:text="Fashion and Style"
                 />
                 <CheckBox android:id="@+id/checkbox_Sport"
                           android:padding="10dp"
+                          android:textColor="@color/colorText"
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
                           android:text="Sport"
@@ -92,6 +96,7 @@
                 android:layout_height="match_parent" >
             <Button
                     android:id="@+id/buttonSave_filter"
+                    android:textColor="#ffffff"
                     android:background="@color/colorAccent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

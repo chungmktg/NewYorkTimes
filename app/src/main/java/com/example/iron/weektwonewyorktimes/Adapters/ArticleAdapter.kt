@@ -1,5 +1,6 @@
 package com.example.iron.weektwonewyorktimes.Adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.support.v7.widget.RecyclerView
@@ -28,15 +29,15 @@ class ArticleAdapter (private val context: Context, private val arrayList: List<
 
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(p0: ArticleHolder, p1: Int) {
-        p0.title?.text = arrayList?.get(p1)?.snippet ?: "new york time"
+        p0.title?.text = arrayList?.get(p1)?.headline?.main +"\n" + arrayList?.get(p1)?.snippet
+
         if (arrayList?.get(p1)?.multimedia?.isEmpty()!!) {
-            p0.imageHinh?.let {
-                Glide.with(context).load("https://duythanhcse.files.wordpress.com/2018/05/irontrade.png").into(it)
-            }
+            p0.imageHinh?.setImageResource(R.drawable.thenewyorktime)
         } else {
             p0.imageHinh?.let {
-                Glide.with(context).load(WEBSIDE + arrayList?.get(p1)?.multimedia?.get(0)?.url).into(it)
+                Glide.with(context).load(WEBSIDE + arrayList.get(p1).multimedia?.get(0)?.url).into(it)
             }
         }
         p0.linearLayout?.setOnClickListener {
