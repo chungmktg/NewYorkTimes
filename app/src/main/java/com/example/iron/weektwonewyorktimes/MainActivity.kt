@@ -1,6 +1,5 @@
 package com.example.iron.weektwonewyorktimes
 
-import android.content.Context
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -19,7 +18,6 @@ import com.example.iron.weektwonewyorktimes.Views.IView
 import kotlinx.android.synthetic.main.activity_main.*
 import android.support.v7.widget.RecyclerView
 import android.widget.Toast
-import android.net.ConnectivityManager
 import java.io.IOException
 import android.widget.AbsListView
 
@@ -80,7 +78,7 @@ class MainActivity : AppCompatActivity(), IView {
                 var firstVisibleItems: IntArray? = null
                 firstVisibleItems = manager.findFirstVisibleItemPositions(firstVisibleItems)
                 if(firstVisibleItems != null && firstVisibleItems.isNotEmpty()) {
-                    pastVisibleItems = firstVisibleItems[0];
+                    pastVisibleItems = firstVisibleItems[0]
                 }
                 if (isScrolling){
                     if ((currentItems + pastVisibleItems) >= totalItems){
@@ -119,8 +117,8 @@ class MainActivity : AppCompatActivity(), IView {
                 totalItems = manager.itemCount
                 var firstVisibleItems: IntArray? = null
                 firstVisibleItems = manager.findFirstVisibleItemPositions(firstVisibleItems)
-                if(firstVisibleItems != null && firstVisibleItems.isNotEmpty()) {
-                    pastVisibleItems = firstVisibleItems[0];
+                if(!(firstVisibleItems == null || !firstVisibleItems.isNotEmpty())) {
+                    pastVisibleItems = firstVisibleItems[0]
                 }
                 if (isScrolling){
                     if ((currentItems + pastVisibleItems) >= totalItems){

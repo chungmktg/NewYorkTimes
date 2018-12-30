@@ -13,8 +13,6 @@ import android.support.v4.content.ContextCompat.*
 
 
 class MainPresenter: IModelsGetDataAPI {
-
-
     private var iView: IView?=null
     private var getdataAPI: GetdataAPI = GetdataAPI(this)
 
@@ -33,7 +31,6 @@ class MainPresenter: IModelsGetDataAPI {
        getdataAPI.getDataLoadMorePage(page)
    }
     override fun getSucces(doclist: List<Doc>?) {
-        Log.d("mainpresentergetsuccess",doclist.toString())
         iView?.getDataSuccess(doclist)
     }
     override fun getSuccesLoadMore(doclist: List<Doc>?) {
@@ -42,6 +39,4 @@ class MainPresenter: IModelsGetDataAPI {
     override fun getFailed(message: String) {
         iView?.getDataFailed(message)
     }
-
-
 }

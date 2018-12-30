@@ -11,7 +11,6 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 class GetdataAPI(var iModelsGetDataAPI: IModelsGetDataAPI) {
-
     private val filter = HashMap<String, String?>()
     lateinit var currentFilter : HashMap<String, String?>
 
@@ -48,9 +47,7 @@ class GetdataAPI(var iModelsGetDataAPI: IModelsGetDataAPI) {
         filter["api-key"] = API_KEY
         filter["page"] = page
     }
-
     private fun getRetrofit(filter: HashMap<String, String?>, isLoadMore : Boolean) {
-
         val retrofit = Retrofit.Builder().addConverterFactory(
             GsonConverterFactory.create(
                 GsonBuilder().create()
@@ -71,15 +68,11 @@ class GetdataAPI(var iModelsGetDataAPI: IModelsGetDataAPI) {
                         }else{
                             iModelsGetDataAPI.getSuccesLoadMore(response.body()?.response?.docs)
                         }
-
                     }
-
                 }
                 override fun onFailure(call: Call<Article>, t: Throwable) {
                     iModelsGetDataAPI.getFailed("load failed")
                 }
             })
     }
-
-
 }
