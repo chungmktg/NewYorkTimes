@@ -58,10 +58,9 @@ class MainActivity : AppCompatActivity(), IView {
     }
     override fun getDataSuccess(listDemo: List<Doc>?) {
         arrayArticalLoadMore = ArrayList(listDemo)
-        adapters = ArticleAdapter(this@MainActivity, listDemo)
+        adapters = ArticleAdapter(this@MainActivity, arrayArticalLoadMore)
         val manager = StaggeredGridLayoutManager(3, LinearLayoutManager.VERTICAL)
         manager.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
-        recycleview_main.layoutManager = manager
         recycleview_main.setHasFixedSize(true)
         recycleview_main.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -90,6 +89,7 @@ class MainActivity : AppCompatActivity(), IView {
 
             }
         })
+        recycleview_main.layoutManager = manager
         recycleview_main.adapter = adapters
         adapters.notifyDataSetChanged()
     }
@@ -98,39 +98,6 @@ class MainActivity : AppCompatActivity(), IView {
             for(i in listDemo)
                 arrayArticalLoadMore.add(i)
         }
-        adapters = ArticleAdapter(this@MainActivity, arrayArticalLoadMore)
-        val manager = StaggeredGridLayoutManager(3, LinearLayoutManager.VERTICAL)
-        manager.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
-        recycleview_main.layoutManager = manager
-        recycleview_main.setHasFixedSize(true)
-        recycleview_main.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
-                    isScrolling = true
-                }
-            }
-
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                currentItems = manager.childCount
-                totalItems = manager.itemCount
-                var firstVisibleItems: IntArray? = null
-                firstVisibleItems = manager.findFirstVisibleItemPositions(firstVisibleItems)
-                if(!(firstVisibleItems == null || !firstVisibleItems.isNotEmpty())) {
-                    pastVisibleItems = firstVisibleItems[0]
-                }
-                if (isScrolling){
-                    if ((currentItems + pastVisibleItems) >= totalItems){
-                        isScrolling = false
-                        Toast.makeText(this@MainActivity, "Loading more...", Toast.LENGTH_SHORT).show()
-                        loadNextDataFromApi(pagecurrent)
-                    }
-                }
-
-            }
-        })
-        recycleview_main.adapter = adapters
         adapters.notifyDataSetChanged()
     }
     private fun loadNextDataFromApi(page:Int) {

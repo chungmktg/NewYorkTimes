@@ -45,8 +45,6 @@ class ArticleAdapter (private val context: Context, private val arrayList: List<
             intent.putExtra("url",arrayList[p1].web_url)
             context.startActivity(intent)
         }
-
-
     }
 
     inner class ArticleHolder(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
